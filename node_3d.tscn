@@ -1,0 +1,73 @@
+[gd_scene load_steps=8 format=3 uid="uid://pgmwg78o4vus"]
+
+[ext_resource type="PackedScene" uid="uid://kicjwmh02uwf" path="res://scenes/player.tscn" id="1_mlih8"]
+[ext_resource type="Script" path="res://node_3d.gd" id="1_omnlo"]
+[ext_resource type="PackedScene" uid="uid://dmr0fcamx7t56" path="res://addons/virtual_joystick/virtual_joystick_scene.tscn" id="2_y4xi1"]
+[ext_resource type="Texture2D" uid="uid://f0rl178l4i7b" path="res://icon.svg" id="3_sg0pg"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_33qhk"]
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_i44q6"]
+data = PackedVector3Array(1, 0, 1, -1, 0, 1, 1, 0, -1, -1, 0, 1, -1, 0, -1, 1, 0, -1)
+
+[sub_resource type="Environment" id="Environment_qmghu"]
+
+[node name="Node3D" type="Node3D"]
+script = ExtResource("1_omnlo")
+
+[node name="sun" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.803924, -0.216035, 0.554108, 0.322035, 0.625163, 0.71096, -0.5, 0.75, -0.433013, 0, 4.29133, 0)
+shadow_enabled = true
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0)
+mesh = SubResource("PlaneMesh_33qhk")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="MeshInstance3D"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="MeshInstance3D/StaticBody3D"]
+shape = SubResource("ConcavePolygonShape3D_i44q6")
+
+[node name="Player" parent="." instance=ExtResource("1_mlih8")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.345315, 2.6482, 1.36852)
+
+[node name="SpotLight3D" type="SpotLight3D" parent="Player/Neck/Head/Eyes/Camera" index="0"]
+visible = false
+
+[node name="Virtual Joystick" parent="." instance=ExtResource("2_y4xi1")]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_qmghu")
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="jump" type="TouchScreenButton" parent="Control"]
+position = Vector2(865, 339)
+texture_normal = ExtResource("3_sg0pg")
+texture_pressed = ExtResource("3_sg0pg")
+
+[node name="crouch" type="TouchScreenButton" parent="Control"]
+position = Vector2(860, 211)
+texture_normal = ExtResource("3_sg0pg")
+
+[node name="freelook" type="TouchScreenButton" parent="Control"]
+position = Vector2(731, 184)
+texture_normal = ExtResource("3_sg0pg")
+
+[node name="flashlight" type="TouchScreenButton" parent="Control"]
+position = Vector2(77, 113)
+texture_normal = ExtResource("3_sg0pg")
+
+[node name="sprint" type="TouchScreenButton" parent="Control"]
+position = Vector2(704, 337)
+texture_normal = ExtResource("3_sg0pg")
+
+[connection signal="pressed" from="Control/flashlight" to="." method="_on_flashlight_pressed"]
+
+[editable path="Player"]
